@@ -1,20 +1,21 @@
-import { Code2, Palette, Rocket, Zap } from 'lucide-react';
+import { Code2, Palette, Rocket, Zap, FileCode, Server, Wind, Database, GitBranch, Blocks, Coffee, Globe, CloudCog } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useEffect, useRef, useState } from 'react';
 
 const skills = [
-  { name: 'HTML5', level: 80 },
-  { name: 'CSS3', level: 75 },
-  { name: 'Bootstrap', level: 70 },
-  { name: 'JavaScript', level: 70 },
-  { name: 'React.js', level: 50 },
-  { name: 'TypeScript', level: 40 },
-  { name: 'Tailwind CSS', level: 50 },
-  { name: 'PostgreSQL / MySql', level: 70 },
-  { name: 'Git / GitHub', level: 60 },
-  { name: 'JAVA', level: 60 },
-  { name: 'PHP', level: 50 },
-  { name: 'ASP.net', level: 40 },
+  { name: 'HTML5', icon: FileCode, color: 'text-orange-500' },
+  { name: 'CSS3', icon: Palette, color: 'text-blue-400' },
+  { name: 'Bootstrap', icon: Blocks, color: 'text-purple-400' },
+  { name: 'Tailwind CSS', icon: Wind, color: 'text-cyan-300' },
+  { name: 'JavaScript', icon: Code2, color: 'text-yellow-400' },
+  { name: 'TypeScript', icon: FileCode, color: 'text-blue-500' },
+  { name: 'React.js', icon: Code2, color: 'text-cyan-400' },
+  { name: 'PostgreSQL / MySQL', icon: Database, color: 'text-blue-600' },
+  { name: 'Git / GitHub', icon: GitBranch, color: 'text-gray-500' },
+  { name: 'JAVA', icon: Coffee, color: 'text-red-500' },
+  { name: 'PHP', icon: Server, color: 'text-indigo-500' },
+  { name: 'ASP.net', icon: Globe, color: 'text-purple-600' },
+  { name: 'AWS', icon: CloudCog, color: 'text-purple-600' },
 ];
 
 const features = [
@@ -69,7 +70,7 @@ export const About = () => {
     >
       <div className="container mx-auto px-4">
         <div className={`text-center mb-16 ${isVisible ? 'animate-fade-up' : 'opacity-0'}`}>
-          <h2 className="text-5xl md:text-6xl font-bold mb-4">
+          <h2 className="text-4xl md:text-6xl font-bold mb-4">
             About <span className="gradient-text">Me</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -97,35 +98,26 @@ export const About = () => {
 
         {/* Skills */}
         <div className={`max-w-6xl mx-auto ${isVisible ? 'animate-fade-up' : 'opacity-0'}`}>
-          <h3 className="text-5xl font-bold text-center mb-12">
+          <h3 className="text-3xl font-bold text-center mb-12">
             Technical <span className="gradient-text">Skills</span>
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {skills.map((skill, index) => (
               <Card
                 key={skill.name}
-                className={`p-6 glass-effect relative overflow-hidden group cursor-pointer transition-all duration-500 ${
-                  isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+                className={`p-8 glass-effect relative overflow-hidden group cursor-pointer transition-all duration-500 hover:scale-110 hover:-rotate-2 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 }`}
                 style={{ 
-                  animationDelay: `${index * 100}ms`,
                   transitionDelay: `${index * 100}ms`
                 }}
               >
-                <div className="relative z-10">
-                  <h4 className="font-bold mb-2 text-lg">{skill.name}</h4>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-out"
-                        style={{
-                          width: isVisible ? `${skill.level}%` : '0%',
-                          transitionDelay: `${index * 150}ms`,
-                        }}
-                      />
-                    </div>
-                    <span className="text-sm font-bold text-primary">{skill.level}%</span>
+                <div className="relative z-10 flex flex-col items-center justify-center gap-4">
+                  <div className={`relative ${skill.color}`}>
+                    <skill.icon className="w-12 h-10 group-hover:scale-125 transition-transform duration-300" strokeWidth={1.5} />
+                    <div className="absolute inset-0 blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" style={{ background: 'currentColor' }} />
                   </div>
+                  <h4 className="font-bold text-center text-lg">{skill.name}</h4>
                 </div>
                 <div 
                   className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -136,6 +128,5 @@ export const About = () => {
         </div>
       </div>
     </section>
-    
   );
 };
