@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card } from '@/components/ui/card';
-import { Mail, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState, FormEvent } from 'react';
+import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 export const Contact = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,190 +15,210 @@ export const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate AJAX request
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Web3Forms API endpoint
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: 'f0c82954-6005-4946-8b27-dc4d518e8dd3',
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
 
-    toast.success('Message sent successfully! I\'ll get back to you soon.', {
-      duration: 5000,
-    });
+      const result = await response.json();
 
-    setFormData({ name: '', email: '', subject: '', message: '' });
+      if (result.success) {
+        toast({
+          title: 'Message Sent Successfully!',
+          description: "Thank you for reaching out. I'll get back to you within 24 hours.",
+          duration: 5000,
+        });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        toast({
+          title: 'Submission Failed',
+          description: 'Please try again later or contact me directly via email.',
+          variant: 'destructive',
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error Sending Message',
+        description: 'An unexpected error occurred. Please check your internet connection.',
+        variant: 'destructive',
+        duration: 5000,
+      });
+    }
+
     setIsSubmitting(false);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <section id="contact" className="py-20 md:py-32">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16 animate-fade-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-4">
-            Get In <span className="gradient-text">Touch</span>
+    <section id="contact" className="py-16 md:py-24 bg-muted/30">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+            Get In <span className="gradient-primary bg-clip-text text-transparent">Touch</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Have a project in mind? Let's work together to create something amazing!
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+            Ready to transform your HR strategy? Let's discuss your needs
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto">
           {/* Contact Info */}
-          <div className="space-y-8">
-            <div className="animate-fade-up">
-              <h3 className="text-3xl font-bold mb-6">Let's Talk</h3>
-              <p className="text-muted-foreground text-lg mb-8">
-                I'm always open to discussing new projects, creative ideas, or opportunities
-                to be part of your vision.
+          <div className="space-y-6 md:space-y-8">
+            <div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-6">Contact Information</h3>
+              <p className="text-base md:text-lg text-muted-foreground mb-8">
+                I'm here to help you build exceptional teams and create thriving workplace cultures.
+                Reach out for a consultation.
               </p>
             </div>
 
-            <Card className="p-6 glass-effect flex items-start gap-4 hover:scale-105 transition-transform animate-fade-up">
-              <Mail className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-              <div>
-                <h4 className="font-bold mb-1">Email</h4>
-                <a
-                  href="mailto:utkarshmisra16@gmail.com"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  utkarshmisra16@gmail.com
-                </a>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4 p-4 md:p-6 bg-card border border-border rounded-xl hover:scale-105 smooth-transition card-shadow">
+                <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1 text-base md:text-lg">Email</h4>
+                  <p className="text-sm md:text-base text-muted-foreground">contact@vaibhavmishra.com</p>
+                </div>
               </div>
-            </Card>
 
-            <Card className="p-6 glass-effect flex items-start gap-4 hover:scale-105 transition-transform animate-fade-up">
-              <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-              <div>
-                <h4 className="font-bold mb-1">Location</h4>
-                <p className="text-muted-foreground">Kanpur, U.P., INDIA</p>
+              <div className="flex items-start gap-4 p-4 md:p-6 bg-card border border-border rounded-xl hover:scale-105 smooth-transition card-shadow">
+                <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1 text-base md:text-lg">Phone</h4>
+                  <p className="text-sm md:text-base text-muted-foreground">+91 XXX XXX XXXX</p>
+                </div>
               </div>
-            </Card>
 
-            <div className="pt-8 animate-fade-up">
-              <h4 className="font-bold mb-4 text-lg">Connect With Me</h4>
-              <div className="flex gap-4">
-                <a
-                  href="https://github.com/utkarshmisra16"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 hover:border-primary flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 glow-box overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary opacity-0 group-hover:opacity-20 transition-opacity" />
-                  <Github className="w-6 h-6 relative z-10 text-primary group-hover:text-white transition-colors" />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/utkarsh-misra-8084601b8/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 hover:border-primary flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 glow-box overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary opacity-0 group-hover:opacity-20 transition-opacity" />
-                  <Linkedin className="w-6 h-6 relative z-10 text-primary group-hover:text-white transition-colors" />
-                </a>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/30 hover:border-primary flex items-center justify-center transition-all hover:scale-110 hover:-translate-y-1 glow-box overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary opacity-0 group-hover:opacity-20 transition-opacity" />
-                  <Twitter className="w-6 h-6 relative z-10 text-primary group-hover:text-white transition-colors" />
-                </a>
+              <div className="flex items-start gap-4 p-4 md:p-6 bg-card border border-border rounded-xl hover:scale-105 smooth-transition card-shadow">
+                <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1 text-base md:text-lg">Location</h4>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    118/30, Gumti No.5<br />
+                    Kanpur, Uttar Pradesh, India
+                  </p>
+                </div>
               </div>
+            </div>
+
+            <div className="p-6 md:p-8 rounded-xl gradient-primary text-white">
+              <h4 className="text-xl md:text-2xl font-bold mb-3">24-Hour Response Time</h4>
+              <p className="text-sm md:text-base opacity-90">
+                We commit to responding to all inquiries within 24 hours. Your time is valuable,
+                and we respect that.
+              </p>
             </div>
           </div>
 
           {/* Contact Form */}
-          <Card className="p-8 glass-effect animate-fade-up">
+          <div className="bg-card border border-border p-6 md:p-8 rounded-2xl card-shadow">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
+                  Full Name *
                 </label>
                 <Input
                   id="name"
                   name="name"
+                  type="text"
+                  required
                   value={formData.name}
                   onChange={handleChange}
-                  required
-                  placeholder="Your name"
-                  className="bg-background"
+                  placeholder="John Doe"
+                  className="w-full"
                 />
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
+                  Email Address *
                 </label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
+                  required
                   value={formData.email}
                   onChange={handleChange}
-                  required
-                  placeholder="utkarshmisra16@gmail.com"
-                  className="bg-background"
+                  placeholder="john@example.com"
+                  className="w-full"
                 />
               </div>
 
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                  Subject
+                  Subject *
                 </label>
                 <Input
                   id="subject"
                   name="subject"
+                  type="text"
+                  required
                   value={formData.subject}
                   onChange={handleChange}
-                  required
-                  placeholder="What's this about?"
-                  className="bg-background"
+                  placeholder="How can I help you?"
+                  className="w-full"
                 />
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-2">
-                  Message
+                  Message *
                 </label>
                 <Textarea
                   id="message"
                   name="message"
+                  required
                   value={formData.message}
                   onChange={handleChange}
-                  required
-                  placeholder="Tell me more about your project..."
+                  placeholder="Tell me about your requirements..."
                   rows={6}
-                  className="bg-background resize-none"
+                  className="w-full resize-none"
                 />
               </div>
 
               <Button
                 type="submit"
-                size="lg"
-                className="w-full glow-box animate-glow-pulse"
                 disabled={isSubmitting}
+                className="w-full gradient-primary text-white font-semibold py-6 text-base md:text-lg hover:scale-105 smooth-transition"
               >
                 {isSubmitting ? (
                   'Sending...'
                 ) : (
                   <>
-                    <Send className="w-4 h-4 mr-2" />
+                    <Send className="w-5 h-5 mr-2" />
                     Send Message
                   </>
                 )}
               </Button>
             </form>
-          </Card>
+          </div>
         </div>
       </div>
     </section>
